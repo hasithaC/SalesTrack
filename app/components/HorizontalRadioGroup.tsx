@@ -9,14 +9,13 @@ type Props = {
   disabled?: boolean;
 };
 
-// Fixed colors for positions: 0 = green, 1 = orange, 2 = red
 const selectedColors = ['#34C759', '#FF9500', '#FF3B30'];
 
 const HorizontalRadioGroup = ({
   label,
   options,
   selected,
-  onChange,
+  onChange = () => {},
   disabled = false,
 }: Props) => {
   return (

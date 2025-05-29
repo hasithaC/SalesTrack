@@ -24,15 +24,15 @@ const AddCustomerModal = ({visibility, onPressClose}: Props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-  if (visibility) {
-    setName('');
-    setEmail('');
-    setPhone('');
-    setAddress('');
-    setStatus('Active');
-    setFormError('');
-  }
-}, [visibility]);
+    if (visibility) {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setAddress('');
+      setStatus('Active');
+      setFormError('');
+    }
+  }, [visibility]);
 
   const validate = (): boolean => {
     if (!name.trim()) {

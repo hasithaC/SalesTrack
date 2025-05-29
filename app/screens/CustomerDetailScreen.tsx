@@ -1,52 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  View,
   Text,
   StyleSheet,
   FlatList,
-  ScrollView,
-  Modal,
-  Pressable,
-  TouchableOpacity,
 } from 'react-native';
-import {RouteProp, useRoute} from '@react-navigation/native';
-import {
-  ArrowLeft,
-  CaretLeft,
-  NavigationArrow,
-  Plus,
-} from 'phosphor-react-native';
-import NavigationManager from '../navigations/NavigationManager';
-import AppTextInput from '../components/AppTextInput';
-import OpportunityModal from '../components/OpportunityModal';
 import {Customer} from '../models';
-import AddCustomerModal from '../components/AddCustomerModal';
 import CustomerDetail from '../components/CustomerDetail';
 import {useSelector} from 'react-redux';
-import HorizontalRadioGroup from '../components/HorizontalRadioGroup';
 import OpportunityCard from '../components/OpportunityCard';
 
-type CustomerStatus = 'Active' | 'Inactive' | 'Lead';
-type OpportunityStatus = 'New' | 'Closed Won' | 'Closed Lost';
 
-interface Opportunity {
-  id: string;
-  name: string;
-  status: OpportunityStatus;
-}
-
-const getStatusColor = (status: CustomerStatus) => {
-  switch (status) {
-    case 'Active':
-      return '#4CAF50';
-    case 'Inactive':
-      return '#9E9E9E';
-    case 'Lead':
-      return '#2196F3';
-    default:
-      return '#000';
-  }
-};
 
 type CustomerDetailScreenProps = {
   route: {
@@ -93,6 +56,7 @@ export default CustomerDetailScreen;
 const styles = StyleSheet.create({
   contentContainerStyle: {
     paddingHorizontal: 20,
+    backgroundColor: '#F5F5F5',
   },
   noOpportunities: {
     textAlign: 'center',

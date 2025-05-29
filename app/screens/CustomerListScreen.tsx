@@ -1,21 +1,26 @@
 import React, {useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useSelector} from 'react-redux';
-import {Customer} from '../models'; // Adjust this import based on your folder structure
+import {Customer} from '../models';
 import {Plus} from 'phosphor-react-native';
-import {useNavigation} from '@react-navigation/native';
 import NavigationManager from '../navigations/NavigationManager';
 import AddCustomerModal from '../components/AddCustomerModal';
-
-const statusColors: Record<string, string> = {
-  Active: '#4CAF50',
-  Inactive: '#9E9E9E',
-  Lead: '#FF9800',
-};
+import HorizontalRadioGroup from '../components/HorizontalRadioGroup';
 
 const CustomerListScreen = () => {
+  const [searchText, setSearchText] = useState('');
   const customers: Customer[] = useSelector(
     (state: any) => state.commonReducer.customers,
+  );
+  const filteredCustomers = customers.filter(customer =>
+    customer.name.toLowerCase().includes(searchText.toLowerCase()),
   );
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -28,27 +33,37 @@ const CustomerListScreen = () => {
         onPress={() => {
           NavigationManager.navigate('CustomerDetail', {customer: item});
         }}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{initial}</Text>
+        <View style={styles.cardTitleView}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{initial}</Text>
+          </View>
+          <View style={styles.details}>
+            <Text style={styles.name} adjustsFontSizeToFit>
+              {item.name}
+            </Text>
+            <Text style={styles.contact} adjustsFontSizeToFit>
+              {item.phone}
+            </Text>
+          </View>
+
+          <Text
+            style={
+              styles.oppaturnity
+            }>{`Num Of Opp ${item.opportunities.length}`}</Text>
         </View>
-        <View style={styles.details}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.contact}>{item.email}</Text>
-        </View>
-        <View
-          style={[
-            styles.statusBox,
-            {backgroundColor: statusColors[item.status] || '#ccc'},
-          ]}>
-          <Text style={styles.statusText}>{item.status}</Text>
-        </View>
+
+        <HorizontalRadioGroup
+          label="Customer Status"
+          options={['Active', 'Lead', 'Inactive']}
+          selected={item.status}
+          disabled={true}
+        />
       </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Customers</Text>
         <TouchableOpacity
@@ -59,12 +74,18 @@ const CustomerListScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* List */}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search by name"
+        value={searchText}
+        onChangeText={setSearchText}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
       <FlatList
-        data={customers}
+        data={filteredCustomers}
         keyExtractor={(_, index) => index.toString()}
         renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
       />
 
       <AddCustomerModal
@@ -82,7 +103,7 @@ export default CustomerListScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 12,
     backgroundColor: '#F5F5F5',
   },
@@ -99,17 +120,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  listContent: {
-    paddingBottom: 20,
-  },
   card: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 12,
     marginBottom: 10,
     elevation: 2,
+  },
+  cardTitleView: {
+    flex: 1,
+    flexDirection: 'row',
   },
   avatar: {
     width: 42,
@@ -137,14 +158,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#777',
   },
-  statusBox: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 12,
+  oppaturnity: {
+    textAlign: 'center',
+    color: '#007BFF',
+    fontStyle: 'italic',
   },
-  statusText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '500',
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 10,
+    backgroundColor: '#fff',
   },
 });
