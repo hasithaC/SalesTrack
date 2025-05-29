@@ -1,5 +1,5 @@
 import {SET_CUSTOMER} from '../actions/type';
-import createReducer from '../helper/CreateReducer';
+import createReducer from '../helper/createReducer';
 import {Customer} from '../models';
 
 const initialState = {
