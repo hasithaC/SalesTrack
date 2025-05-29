@@ -1,22 +1,24 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 type Props = {
   label: string;
   options: string[];
   selected: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
 };
 
 // Fixed colors for positions: 0 = green, 1 = orange, 2 = red
 const selectedColors = ['#34C759', '#FF9500', '#FF3B30'];
 
-const HorizontalRadioGroup = ({label, options, selected, onChange}: Props) => {
+const HorizontalRadioGroup = ({
+  label,
+  options,
+  selected,
+  onChange,
+  disabled = false,
+}: Props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -27,6 +29,7 @@ const HorizontalRadioGroup = ({label, options, selected, onChange}: Props) => {
 
           return (
             <TouchableOpacity
+              disabled={disabled}
               key={option}
               style={[
                 styles.radioButton,

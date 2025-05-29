@@ -6,28 +6,34 @@ import ConfirmCancelButton from './ConfirmCancelButton';
 import HorizontalRadioGroup from './HorizontalRadioGroup';
 import {Customer, Opportunity, OpportunityStatus} from '../models';
 import {useDispatch} from 'react-redux';
-import { setOpportunity} from '../actions/action';
+import {setOpportunity} from '../actions/action';
 
 type Props = {
   customer: Customer;
   visibility: boolean;
   onPressClose: () => void;
+  opportunity?: Opportunity;
 };
 
-const OpportunityModal = ({visibility, customer, onPressClose}: Props) => {
-  const [name, setName] = useState('');
-  const [status, setStatus] = useState<OpportunityStatus>('New');
+const OpportunityModal = ({
+  visibility,
+  customer,
+  onPressClose,
+  opportunity,
+}: Props) => {
+  const [name, setName] = useState(opportunity?.name ?? '');
+  const [status, setStatus] = useState<OpportunityStatus>(
+    opportunity?.status ?? 'New',
+  );
   const [formError, setFormError] = useState('');
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (visibility) {
-      setName('');
-      setStatus('New');
+      setName(opportunity?.name ?? '');
+      setStatus(opportunity?.status ?? 'New');
       setFormError('');
-    }
-  }, [visibility]);
+  }, [visibility, opportunity]);
 
   const validate = (): boolean => {
     if (!name.trim()) {
@@ -44,13 +50,13 @@ const OpportunityModal = ({visibility, customer, onPressClose}: Props) => {
       return;
     }
 
-    const opportunity: Opportunity = {
-      id: uuid.v4().toString(),
+    const newOpportunity: Opportunity = {
+      id: opportunity?.id ?? uuid.v4().toString(),
       name,
       status,
     };
 
-    dispatch(setOpportunity({opportunity: opportunity, customer: customer}));
+    dispatch(setOpportunity({opportunity: newOpportunity, customer: customer}));
     onPressClose();
   };
 
@@ -68,7 +74,7 @@ const OpportunityModal = ({visibility, customer, onPressClose}: Props) => {
           />
 
           <HorizontalRadioGroup
-            label="Customer Status"
+            label="Opportunity Status"
             options={['New', 'Closed Won', 'Closed Lost']}
             selected={status}
             onChange={value => setStatus(value as OpportunityStatus)}
