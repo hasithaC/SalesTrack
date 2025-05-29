@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {Customer} from '../models'; // Adjust this import based on your folder structure
 import {Plus} from 'phosphor-react-native';
+import {useNavigation} from '@react-navigation/native';
+import NavigationManager from '../navigations/NavigationManager';
+import AddCustomerModal from '../components/AddCustomerModal';
 
 const statusColors: Record<string, string> = {
   Active: '#4CAF50',
@@ -14,11 +17,17 @@ const CustomerListScreen = () => {
   const customers: Customer[] = useSelector(
     (state: any) => state.commonReducer.customers,
   );
+  const [modalVisible, setModalVisible] = useState(false);
 
   const renderItem = ({item}: {item: Customer}) => {
     const initial = item.name ? item.name[0].toUpperCase() : '?';
+
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => {
+          NavigationManager.navigate('CustomerDetail', {customer: item});
+        }}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initial}</Text>
         </View>
@@ -33,7 +42,7 @@ const CustomerListScreen = () => {
           ]}>
           <Text style={styles.statusText}>{item.status}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -42,7 +51,10 @@ const CustomerListScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Customers</Text>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalVisible(true);
+          }}>
           <Plus size={28} color="#007BFF" />
         </TouchableOpacity>
       </View>
@@ -53,6 +65,13 @@ const CustomerListScreen = () => {
         keyExtractor={(_, index) => index.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+      />
+
+      <AddCustomerModal
+        visibility={modalVisible}
+        onPressClose={() => {
+          setModalVisible(false);
+        }}
       />
     </View>
   );

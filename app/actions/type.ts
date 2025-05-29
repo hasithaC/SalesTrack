@@ -1,1 +1,2 @@
 export const SET_CUSTOMER = 'SET_CUSTOMER';
+export const SET_OPPORTUNITY = 'SET_OPPORTUNITY';
